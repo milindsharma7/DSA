@@ -1,14 +1,6 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-void Make_Set(vector<pair<int,int>> &dsu,int u){
-
-    if(dsu[u].first==u)
-        return;
-    dsu[dsu[u].first].second+=1;
-    Make_Set(dsu,dsu[u].first);
-}
-
 int Find(vector<pair<int,int>> &dsu,int u){
 
     if(dsu[u].first==u)
@@ -23,18 +15,22 @@ bool Union(vector<pair<int,int>> &dsu,int u,int v){
 
     if(f1==f2)
         return true;
-    
-    if(dsu[u].second>=dsu[v].second)
+
+    if(dsu[f1].second>dsu[f2].second)
     {
-        dsu[v].first=u;
-        Make_Set(dsu,v);
-    }
-    else
-    {
-        dsu[u].first=v;
-        Make_Set(dsu,u);
+        dsu[f2].first=f1;
     }
 
+    else if(dsu[f1].second==dsu[f1].second)
+    {
+        dsu[f2].first=dsu[f1].first;
+        dsu[f1].second++;
+    }
+
+    else
+    { 
+        dsu[f1].first=f2;
+    }
     return false;
 }
 
