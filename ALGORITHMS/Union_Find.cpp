@@ -54,6 +54,7 @@ int main(){
     }
 
     bool contains_cycle=false;
+    
     for(int i=0;i<m;i++)
     {
         int u,v;cin>>u>>v;
@@ -63,6 +64,6 @@ int main(){
 
     if(contains_cycle)cout<<"Graph contains cycle"<<endl;
     else cout<<"Graph does not contain cycle"<<endl;
-    
+
     return 0;
 }
