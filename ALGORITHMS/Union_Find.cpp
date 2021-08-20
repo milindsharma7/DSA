@@ -21,6 +21,11 @@ int Union(vector<pair<int,int>> &dsu,int u,int v){
     int f1=Find(dsu,u);
     int f2=Find(dsu,v);
     
+    if(dsu[f2].second>=dsu[f1].second)
+    {
+        dsu[f1].first=f2;
+        Make_Set(dsu,u);
+    }
 }
 
 int main(){
