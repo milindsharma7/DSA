@@ -25,7 +25,8 @@ class SegmentTree{
         void update(ll i,ll pos,ll l,ll r,ll number){
             ll mid = (l+r)/2;
             if(l==r){
-                Tree[l] = number;
+                Tree[i] = number;
+                return;
             }
             else if(pos<=mid){
                 update(2*i,pos,l,mid,number);
