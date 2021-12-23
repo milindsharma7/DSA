@@ -37,7 +37,7 @@ class SegmentTree{
 
             Tree[i] = Tree[2*i] + Tree[2*i+1];
         }
-        int query(ll i,ll l,ll r,ll l1,ll r1){
+        long long int query(ll i,ll l,ll r,ll l1,ll r1){
             ll mid = (l+r)/2;
             if(l1>r || r1<l){
                 return 0;
