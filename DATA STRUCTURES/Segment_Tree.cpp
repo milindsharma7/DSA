@@ -6,15 +6,18 @@ using namespace std;
 class SegmentTree{
 
     private:
-        vector <ll> Tree = vector <ll>(1000000,0);
+        vector <ll> Tree;
         vector <ll> arr;
     public:
         SegmentTree(vector <ll> arr){
             this->arr = arr;
+            Tree.resize(4*arr.size(),0);
+            construct(1,0,arr.size()-1);
         }
+
         void construct(ll i,ll l,ll r){
             if(l==r){
-                Tree[i] = arr[l-1];
+                Tree[i] = arr[l];
                 return;
             }
             ll mid = (l+r)/2;   
@@ -22,6 +25,7 @@ class SegmentTree{
             construct(2*i+1,mid+1,r);
             Tree[i] = Tree[2*i] + Tree[2*i+1];
         }
+
         void update(ll i,ll pos,ll l,ll r,ll number){
             ll mid = (l+r)/2;
             if(l==r){
@@ -37,6 +41,11 @@ class SegmentTree{
 
             Tree[i] = Tree[2*i] + Tree[2*i+1];
         }
+
+        void update(ll pos,ll number){
+            update(1,pos,0,arr.size()-1,number);
+        }
+
         long long int query(ll i,ll l,ll r,ll l1,ll r1){
             ll mid = (l+r)/2;
             if(l1>r || r1<l){
@@ -50,13 +59,22 @@ class SegmentTree{
 
             return left + right;
         }
+
+        long long int query(ll l,ll r){
+            return query(1,0,arr.size()-1,l,r);
+        }
 };
 
 int main(){
+    // Query -> T.query(left,right) (zero based indexing)
+    // update -> T.update(position,updated number) (zero based indexing)
+    
     vector <ll> v = {1,3,5,7,9,11};
     SegmentTree T(v);
-    T.construct(1,1,6);
-    cout<<T.query(1,1,6,4,6)<<endl;
-    cout<<T.query(1,1,6,1,3)<<endl;
-    cout<<T.query(1,1,6,1,1)<<endl;
+    cout<<T.query(3,5)<<endl;
+    cout<<T.query(0,2)<<endl;
+    cout<<T.query(0,0)<<endl;
+    T.update(4,10);
+    cout<<T.query(3,5)<<endl;
+    cout<<T.query(4,4)<<endl;
 } 
