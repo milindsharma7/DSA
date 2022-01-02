@@ -16,7 +16,7 @@ class LazySegmentTree{
             Lazy.resize(4*arr.size(),0);
             construct(1,0,arr.size()-1);
         }
-        void propogate(ll i,ll l,ll r){
+        void propagate(ll i,ll l,ll r){
             if(l==r){
                 Tree[i] += Lazy[i];
                 Lazy[i] = 0;
@@ -40,13 +40,13 @@ class LazySegmentTree{
         }
         void update(ll i,ll l,ll r,ll l1,ll r1,ll val){
             ll mid = (l+r)/2;
-            propogate(i,l,r);
+            propagate(i,l,r);
             if(l1>r || r1<l){
                 return;
             }
             if(l1<=l && r1>=r){
                 Lazy[i] += val;
-                propogate(i,l,r);    
+                propagate(i,l,r);    
             }
             else{
                 update(2*i,l,mid,l1,r1,val);
@@ -59,7 +59,7 @@ class LazySegmentTree{
         }
         long long int query(ll i,ll l,ll r,ll l1,ll r1){
             ll mid = (l+r)/2;
-            propogate(i,l,r);
+            propagate(i,l,r);
             if(l1>r || r1<l){
                 return 0;
             }
