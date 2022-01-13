@@ -1,37 +1,14 @@
-/*..............OVERKILL..................*/
+/*https://codeforces.com/contest/191/problem/C*/
+/*
+    IF YOU ARE GETTING WRONG ANSWER THEN MAKE SURE ANSWER IS ZERO WHEN WHEN BOTH THE FOOLS ARE IN SAME CITY
+    USE (HLD + LAZY SEG)
+*/
 
 #include <bits/stdc++.h>
 
 using namespace std;
 using ll = long long int;
 #define MAX 21
-
-void __print(int x) {cerr << x;}
-void __print(long x) {cerr << x;}
-void __print(long long x) {cerr << x;}
-void __print(unsigned x) {cerr << x;}
-void __print(unsigned long x) {cerr << x;}
-void __print(unsigned long long x) {cerr << x;}
-void __print(float x) {cerr << x;}
-void __print(double x) {cerr << x;}
-void __print(long double x) {cerr << x;}
-void __print(char x) {cerr << '\'' << x << '\'';}
-void __print(const char *x) {cerr << '\"' << x << '\"';}
-void __print(const string &x) {cerr << '\"' << x << '\"';}
-void __print(bool x) {cerr << (x ? "true" : "false");}
-
-template<typename T, typename V>
-void __print(const pair<T, V> &x) {cerr << '{'; __print(x.first); cerr << ','; __print(x.second); cerr << '}';}
-template<typename T>
-void __print(const T &x) {int f = 0; cerr << '{'; for (auto &i: x) cerr << (f++ ? "," : ""), __print(i); cerr << "}";}
-void _print() {cerr << "]\n";}
-template <typename T, typename... V>
-void _print(T t, V... v) {__print(t); if (sizeof...(v)) cerr << ", "; _print(v...);}
-#ifndef ONLINE_JUDGE
-#define debug(x...) cerr << "[" << #x << "] = ["; _print(x)
-#else
-#define debug(x...)
-#endif
 
 class BinaryLiftingTable{
     private:
@@ -55,7 +32,6 @@ class BinaryLiftingTable{
             }
         }
         ll query(ll node,ll k){
-            if(k<0)return node;
             ll ans = node;
             for(ll i=0;i<MAX;i++){
                 if(k&(1<<i)){
@@ -204,7 +180,6 @@ class HLD{
             }
         }
         void dfsHLD(vector <vector<ll>> &tree,ll node,ll chain){
-            // debug(node);
             visited[node] = true;
             LinearTree[idx] = Value[node];
             Head[node] = chain;
@@ -233,25 +208,19 @@ class HLD{
             return u;
         }
         void LCAUpdate(ll u,ll v){
-            // debug(Head,Depth,Parent,Heavy);
             while(Head[u]!=Head[v]){
                 if(Depth[Head[u]]<Depth[Head[v]]){
                     swap(u,v);
                 }
                 T.update(Position[Head[u]],Position[u],1);
                 u = Parent[Head[u]];
-                // debug(u,v);
             }
-            // debug(u,v);
             if(Depth[u]>Depth[v]){
                 swap(u,v);
             }
             T.update(Position[u],Position[v],1);
         }
         ll LCAQuery(ll u,ll v){
-            debug(Position,u,v);
-            // for(ll i=0;i<LinearTree.size();i++){debug(T.query(i,i));}
-            // debug(Head,Depth,Parent,Heavy);
             ll sum = 0;
             while(Head[u]!=Head[v]){
                 if(Depth[Head[u]]<Depth[Head[v]]){
@@ -259,9 +228,7 @@ class HLD{
                 }
                 sum += T.query(Position[Head[u]],Position[u]);
                 u = Parent[Head[u]];
-                // debug(u,v);
             }
-            // debug(u,v);
             if(Depth[u]>Depth[v]){
                 swap(u,v);
             }
@@ -272,6 +239,7 @@ class HLD{
 
 
 int main(){
+    ios_base::sync_with_stdio(false);cin.tie(NULL);cout.tie(NULL);
     ll n;cin>>n;
     vector<vector<ll>> tree(n+1);
     vector <pair<ll,ll>> edges;
@@ -285,26 +253,38 @@ int main(){
     BinaryLiftingTable T(tree,1);
     ll k;cin>>k;
     while(k--){
-        ll u,v;cin>>u>>v;ll lca = hld.LCA(u,v);
+        ll u,v;cin>>u>>v;
+        if(u==v)continue;
+        ll lca = hld.LCA(u,v);
         ll d1 = hld.Depth[u];
         ll d2 = hld.Depth[v];
         ll dLCA = hld.Depth[lca];
         if(lca==u || lca==v){
             if(lca!=v)swap(u,v),swap(d1,d2); // v = lca
             ll NodeJustbelowLCA1 = T.query(u,d1-dLCA-1);
-            // debug(d1,d2,dLCA,NodeJustbelowLCA1);
-            hld.LCAUpdate(u,NodeJustbelowLCA1-1);
+            hld.LCAUpdate(u,NodeJustbelowLCA1);
             continue;
         }
         ll NodeJustbelowLCA1 = T.query(u,d1-dLCA-1);
         ll NodeJustbelowLCA2 = T.query(v,d2-dLCA-1);
-        // debug(d1,d2,dLCA,NodeJustbelowLCA1,NodeJustbelowLCA2);
         hld.LCAUpdate(u,NodeJustbelowLCA1);
         hld.LCAUpdate(v,NodeJustbelowLCA2);
     }
-    cout<<hld.LCAQuery(1,n)<<endl;
     for(ll i=0;i<n-1;i++){
-        cout<<hld.LCAQuery(edges[i].first,edges[i].second)<<" ";
+        ll u = edges[i].first;ll v = edges[i].second;
+        ll lca = hld.LCA(u,v);
+        ll d1 = hld.Depth[u];
+        ll d2 = hld.Depth[v];
+        ll dLCA = hld.Depth[lca];
+        if(lca==u || lca==v){
+            if(lca!=v)swap(u,v),swap(d1,d2); // v = lca
+            ll NodeJustbelowLCA1 = T.query(u,d1-dLCA-1);
+            cout<<hld.LCAQuery(u,NodeJustbelowLCA1)<<" ";
+            continue;
+        }
+        ll NodeJustbelowLCA1 = T.query(u,d1-dLCA-1);
+        ll NodeJustbelowLCA2 = T.query(v,d2-dLCA-1);
+        cout<<hld.LCAQuery(u,NodeJustbelowLCA1)+hld.LCAQuery(v,NodeJustbelowLCA2)<<" ";
     }
     return 0;
 }
