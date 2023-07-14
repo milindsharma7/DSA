@@ -1,3 +1,7 @@
+// IMPLEMENTATION OF DINIC'S MAX FLOW ALGORITHM
+// SAMPLE TEST CASE GIVEN BELOW
+// PRACTICE LINK: https://www.codechef.com/problems/MAXFLOW
+
 #include <bits/stdc++.h>
 using namespace std;
 
